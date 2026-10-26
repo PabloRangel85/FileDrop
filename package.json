@@ -1,0 +1,18 @@
+{
+  "name": "filedrop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Compartilhamento efemero de arquivos com expiracao automatica",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "multer": "^2.2.0"
+  }
+}

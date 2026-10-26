@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f6f7f2">
+    <meta name="description" content="Envie arquivos por links temporarios, com expiracao por tempo ou numero de downloads.">
+    <title>FileDrop — arquivos com prazo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="FileDrop, inicio">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>filedrop<span class="brand-period">.</span></span>
+      </a>
+      <span class="topbar-note"><span class="status-dot"></span> Compartilhamento temporario</span>
+    </header>
+
+    <main id="upload-view" class="page-shell">
+      <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow"><span class="eyebrow-line"></span> ENVIO DIRETO, SEM CADASTRO</p>
+        <h1 id="page-title">O arquivo chega.<br><span>O link desaparece.</span></h1>
+        <p class="intro-copy">Um link para compartilhar. Um prazo para esquecer.</p>
+        <div class="intro-detail"><span class="detail-mark">100</span><span>MB por arquivo<br>armazenamento local</span></div>
+      </section>
+
+      <section class="transfer-panel" aria-label="Criar compartilhamento">
+        <form id="upload-form">
+          <label id="drop-zone" class="drop-zone" for="file-input" tabindex="0">
+            <input id="file-input" name="file" type="file" hidden>
+            <span class="upload-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="drop-title" id="file-label">Solte seu arquivo aqui</span>
+            <span class="drop-subtitle" id="file-hint">ou <span>escolha no computador</span></span>
+            <span class="file-meta" id="file-meta" aria-live="polite"></span>
+          </label>
+
+          <fieldset class="expiry-fieldset">
+            <legend>O link expira por</legend>
+            <div class="segmented-control" role="group" aria-label="Regra de expiracao">
+              <button class="segment is-active" type="button" data-mode="time" aria-pressed="true">Tempo</button>
+              <button class="segment" type="button" data-mode="downloads" aria-pressed="false">Downloads</button>
+            </div>
+            <div class="rule-control" id="time-control">
+              <label class="sr-only" for="expires-in">Prazo de expiracao</label>
+              <select id="expires-in" name="expiresInHours">
+                <option value="1">Em 1 hora</option>
+                <option value="24" selected>Em 24 horas</option>
+                <option value="168">Em 7 dias</option>
+              </select>
+              <svg aria-hidden="true" viewBox="0 0 20 20"><path d="m5 7.5 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="rule-control is-hidden" id="downloads-control" hidden>
+              <label class="sr-only" for="max-downloads">Quantidade maxima de downloads</label>
+              <input id="max-downloads" name="maxDownloads" type="number" min="1" max="100" value="3" inputmode="numeric">
+              <span class="input-suffix">downloads no maximo</span>
+            </div>
+          </fieldset>
+
+          <p class="form-error" id="form-error" role="alert" hidden></p>
+          <button class="submit-button" id="submit-button" type="submit">
+            <span id="submit-label">Criar link</span>
+            <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M4 10h11m-4-4 4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </form>
+
+        <section class="result-panel" id="result-panel" aria-live="polite" hidden>
+          <div class="result-heading"><span class="success-mark" aria-hidden="true">✓</span><div><h2>Link pronto</h2><p id="result-expiry"></p></div></div>
+          <div class="share-row"><input id="share-link" type="text" readonly aria-label="Link para compartilhar"><button class="copy-button" id="copy-button" type="button" aria-label="Copiar link" title="Copiar link"><svg aria-hidden="true" viewBox="0 0 20 20"><rect x="7" y="7" width="9" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M13 7V5.5A1.5 1.5 0 0 0 11.5 4h-6A1.5 1.5 0 0 0 4 5.5v7A1.5 1.5 0 0 0 5.5 14H7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button></div>
+          <button class="text-button" id="new-transfer-button" type="button">Enviar outro arquivo <span aria-hidden="true">↗</span></button>
+        </section>
+      </section>
+      <footer class="page-footer"><span>FILEDROP <span class="footer-dot">/</span> 01</span><span>Arquivos temporarios, compartilhados com cuidado.</span></footer>
+    </main>
+
+    <main id="download-view" class="download-shell" hidden>
+      <section class="download-panel" aria-live="polite">
+        <div class="download-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 4v12m0 0 4.5-4.5M12 16l-4.5-4.5M5 17v2.5A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <p class="eyebrow"><span class="eyebrow-line"></span> ARQUIVO COMPARTILHADO</p>
+        <h1 id="download-title">Buscando arquivo</h1>
+        <p class="download-copy" id="download-copy">Um instante.</p>
+        <div class="download-facts" id="download-facts" hidden></div>
+        <a class="submit-button download-button" id="download-button" href="#" hidden>Baixar arquivo <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M10 3v10m0 0 4-4m-4 4-4-4M4 15v2h12v-2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="text-button back-link" href="/">Enviar um arquivo <span aria-hidden="true">↗</span></a>
+      </section>
+      <footer class="page-footer"><span>FILEDROP <span class="footer-dot">/</span> 01</span><span>Links com prazo, nao com pegada permanente.</span></footer>
+    </main>
+  </body>
+</html>
